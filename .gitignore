@@ -1,0 +1,61 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# Environment variables - CRITICAL: Protects API keys!
+.env
+.env.*
+.env.local
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Database - Contains user data
+*.db
+*.sqlite
+*.sqlite3
+rag_metadata.db
+
+# Embeddings & Models - Large binary files
+embeddings/
+*.faiss
+*.index
+rag_index.faiss
+
+# Uploaded files - User content
+uploaded_files/
+
+# Node modules (frontend)
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Artifacts from brain
+.gemini/
