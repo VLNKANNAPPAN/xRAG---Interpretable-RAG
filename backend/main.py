@@ -369,7 +369,18 @@ def query_rag(req: QueryRequest):
     
     # Calibrate confidence
     raw_confidence = failure_report["confidence"]
-    calibrated_conf = calibrate_confidence(raw_confidence)
+    
+    # Composite confidence: blend multiple quality signals for a more accurate score
+    uncertainty_val = uncertainty_metrics.get("total_uncertainty", 0.5) if isinstance(uncertainty_metrics, dict) else 0.5
+    composite_confidence = (
+        0.40 * raw_confidence +                    # Retrieval quality (top-k weighted)
+        0.30 * faithfulness_score +                 # Faithfulness to sources (0-1)
+        0.20 * (1.0 - hallucination_risk) +         # Inverse hallucination risk (0-1)
+        0.10 * (1.0 - uncertainty_val)              # Inverse uncertainty (0-1)
+    )
+    composite_confidence = float(max(0.0, min(composite_confidence, 1.0)))
+    
+    calibrated_conf = calibrate_confidence(composite_confidence)
     
     # -----------------------------
     # Quality Gates
@@ -413,7 +424,7 @@ def query_rag(req: QueryRequest):
     response = {
         "answer": validated_answer,  # Use validated answer instead of raw answer
         "shap": shap,
-        "confidence": raw_confidence,
+        "confidence": composite_confidence,
         "calibrated_confidence": calibrated_conf,
         "warnings": failure_report["warnings"],
         "faithfulness_score": faithfulness_score,

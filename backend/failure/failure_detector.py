@@ -41,17 +41,27 @@ def detect_failures(
     # Different chunks contribute differently - that's expected!
 
     # ----------------------------
-    # Confidence computation
+    # Confidence computation (Top-K Weighted)
     # ----------------------------
 
     if weak_retrieval:
         confidence = 0.0
     else:
-        # Confidence based on retrieval quality and SHAP consistency
-        confidence = (
-            0.7 * similarity_scores.mean() +  # Increased weight on similarity
-            0.3 * (1 - shap_scores.std())     # Reduced weight on variance
+        # Use top-k similarity scores (most relevant chunks), not mean of all
+        top_k = min(3, len(similarity_scores))
+        top_sims = np.sort(similarity_scores)[-top_k:]
+
+        # Weighted: 50% top-1, 30% top-k avg, 20% overall mean
+        retrieval_confidence = (
+            0.50 * float(top_sims[-1]) +          # Best match signal
+            0.30 * float(top_sims.mean()) +        # Top-k quality
+            0.20 * float(similarity_scores.mean()) # Broad coverage
         )
+
+        # SHAP consistency — only penalize extreme instability
+        shap_consistency = 1.0 - min(float(shap_scores.std()) * 0.5, 0.3)
+
+        confidence = retrieval_confidence * shap_consistency
 
     confidence = float(max(0.0, min(confidence, 1.0)))
 

@@ -117,7 +117,7 @@ def validate_answer(answer: str, chunks: List[str], query: str) -> Optional[Dict
         }
     
     # Check 3: Remove unsupported claims
-    filtered_answer = remove_unsupported_claims(answer, chunks, threshold=0.5)
+    filtered_answer = remove_unsupported_claims(answer, chunks, threshold=0.35)
     
     if not filtered_answer:
         return {

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import TrustworthinessPanel from './TrustworthinessPanel';
-import CounterfactualView from './CounterfactualView';
+
 import TokenHighlighter from './TokenHighlighter';
 import RetrievalMetricsPanel from './RetrievalMetricsPanel';
 import EmbeddingSpaceViz from './visualizations/EmbeddingSpaceViz';
 import ExplainabilityPanel from './ExplainabilityPanel';
-import { Lightbulb, Target, Zap, Shield, GitBranch } from 'lucide-react';
+import { Lightbulb, Target, Zap, Shield } from 'lucide-react';
 
 const AdvancedExplainabilityDashboard = ({ explanation }) => {
     const [activeTab, setActiveTab] = useState('overview');
@@ -66,16 +66,7 @@ const AdvancedExplainabilityDashboard = ({ explanation }) => {
                             <Target className="w-3 h-3" />
                             Retrieval
                         </button>
-                        <button
-                            onClick={() => setActiveTab('counterfactual')}
-                            className={`px-3 py-2 text-xs font-medium transition-colors whitespace-nowrap flex items-center gap-1 ${activeTab === 'counterfactual'
-                                ? 'text-indigo-600 border-b-2 border-indigo-600'
-                                : 'text-slate-600 hover:text-slate-800'
-                                }`}
-                        >
-                            <GitBranch className="w-3 h-3" />
-                            What-If
-                        </button>
+
                     </div>
                 </div>
 
@@ -126,9 +117,7 @@ const AdvancedExplainabilityDashboard = ({ explanation }) => {
                         </div>
                     )}
 
-                    {activeTab === 'counterfactual' && (
-                        <CounterfactualView counterfactualData={explanation.counterfactual_explanations} />
-                    )}
+
                 </div>
             </div>
 
